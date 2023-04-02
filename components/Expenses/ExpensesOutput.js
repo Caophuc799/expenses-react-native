@@ -36,32 +36,32 @@ export const DUMMY_EXPENSES = [
     date: new Date("2023-3-23"),
   },
   {
-    id: "e1",
+    id: "e6",
     description: "A pair of shoes",
     amount: 59.99,
     date: new Date("2021-12-19"),
   },
   {
-    id: "e2",
+    id: "e7",
     description: "A pair of trouser",
     amount: 89.99,
     date: new Date("2022-12-19"),
   },
   {
-    id: "e3",
+    id: "e8",
     description: "Bananas",
     amount: 9.99,
     date: new Date("2022-12-19"),
   },
   {
-    id: "e4",
+    id: "e9",
     description: "A Book",
     amount: 119.99,
     date: new Date("2023-3-19"),
   },
 
   {
-    id: "e5",
+    id: "e10",
     description: "A Book 1",
     amount: 219.99,
     date: new Date("2023-3-23"),
