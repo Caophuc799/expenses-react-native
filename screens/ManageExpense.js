@@ -6,6 +6,7 @@ import { GlobalStyles } from "../constants/styles";
 import Button from "../components/UI/Button";
 import { ExpensesContext } from "../store/expenses-context";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
+import { storeExpense } from "../util/http";
 
 const ManageExpense = () => {
   const route = useRoute();
@@ -32,10 +33,11 @@ const ManageExpense = () => {
     navigation.goBack();
   };
 
-  const confirmHandler = (data) => {
+  const confirmHandler = async (data) => {
     if (isEditing) {
       expensesContext.updateExpense(expenseId, data);
     } else {
+      await storeExpense(data);
       expensesContext.addExpense(data);
     }
     navigation.goBack();

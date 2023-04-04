@@ -45,7 +45,6 @@ const ExpenseForm = ({
     const descriptionIsValid = expenseData.description.trim().length > 0;
 
     if (!amountIsValid || !dateIsValid || !descriptionIsValid) {
-      console.log(amountIsValid, dateIsValid, descriptionIsValid);
       Alert.alert("Invalid input", "Please check your input values");
       setInputValue((current) => {
         return {
@@ -77,7 +76,7 @@ const ExpenseForm = ({
             onChangeText: inputChangeHandler.bind(this, "amount"),
             value: inputValue.amount.value,
           }}
-          invalid={inputValue.amount.isValid}
+          invalid={!inputValue.amount.isValid}
           style={styles.rowInput}
         />
         <Input
@@ -88,7 +87,7 @@ const ExpenseForm = ({
             onChangeText: inputChangeHandler.bind(this, "date"),
             value: inputValue.date.value,
           }}
-          invalid={inputValue.date.isValid}
+          invalid={!inputValue.date.isValid}
           style={styles.rowInput}
         />
       </View>
@@ -101,7 +100,7 @@ const ExpenseForm = ({
           //   autoCorrect: false,
           //   autoCapitalize: "words",
         }}
-        invalid={inputValue.description.isValid}
+        invalid={!inputValue.description.isValid}
       />
       {formIsInvalid && (
         <Text style={styles.errorText}>

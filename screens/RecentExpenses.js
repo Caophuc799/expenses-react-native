@@ -1,17 +1,28 @@
 import { Text } from "react-native";
 import ExpensesOutput from "../components/Expenses/ExpensesOutput";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ExpensesContext } from "../store/expenses-context";
 import { getDateMinusDate } from "../util/date";
+import { getExpenseData } from "../util/http";
 
 const RecentExpenses = () => {
   const expensesContext = useContext(ExpensesContext);
 
-  const recentExpenses = expensesContext.expenses.filter((item) => {
-    const today = new Date();
-    const date7DaysAgo = getDateMinusDate(today, 7);
-    return item.date > date7DaysAgo;
-  });
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      const expenses = await getExpenseData();
+      expensesContext.setExpenses(expenses);
+    };
+
+    fetchExpenses();
+  }, []);
+
+  const recentExpenses =
+    expensesContext.expenses?.filter((item) => {
+      const today = new Date();
+      const date7DaysAgo = getDateMinusDate(today, 7);
+      return item.date > date7DaysAgo;
+    }) ?? [];
   return (
     <ExpensesOutput
       expensesPeriod={"Last 7 days"}
