@@ -87,7 +87,13 @@ export default function App() {
             <Stack.Screen
               name="ManageExpense"
               component={ManageExpense}
-              options={{ presentation: "modal" }}
+              options={{
+                presentation: "modal",
+                headerStyle: {
+                  backgroundColor: GlobalStyles.colors.primary500,
+                },
+                headerTintColor: "white",
+              }}
             />
           </Stack.Navigator>
         </NavigationContainer>
