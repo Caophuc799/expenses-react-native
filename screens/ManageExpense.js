@@ -1,14 +1,18 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { useContext, useLayoutEffect } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import Button from "../components/UI/Button";
 import { ExpensesContext } from "../store/expenses-context";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
-import { storeExpense } from "../util/http";
+import { deleteExpense, storeExpense, updateExpense } from "../util/http";
+import LoadingOverlay from "../components/UI/LoadingOverlay";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 
 const ManageExpense = () => {
+  const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const route = useRoute();
   const navigation = useNavigation();
   const expenseId = route.params?.expenseId;
@@ -24,9 +28,16 @@ const ManageExpense = () => {
     });
   }, [isEditing, navigation]);
 
-  const deleteExpenseHandler = () => {
-    expensesContext.deleteExpense(expenseId);
-    navigation.goBack();
+  const deleteExpenseHandler = async () => {
+    setIsLoading(true);
+    try {
+      await deleteExpense(expenseId);
+      expensesContext.deleteExpense(expenseId);
+      navigation.goBack();
+    } catch (error) {
+      setError("Could not delete expense - please try again later!");
+      setIsLoading(false);
+    }
   };
 
   const cancelHandler = () => {
@@ -34,14 +45,32 @@ const ManageExpense = () => {
   };
 
   const confirmHandler = async (data) => {
-    if (isEditing) {
-      expensesContext.updateExpense(expenseId, data);
-    } else {
-      await storeExpense(data);
-      expensesContext.addExpense(data);
+    setIsLoading(true);
+    try {
+      if (isEditing) {
+        await updateExpense(expenseId, data);
+        expensesContext.updateExpense(expenseId, data);
+      } else {
+        const id = await storeExpense(data);
+        expensesContext.addExpense({ ...data, id });
+      }
+      navigation.goBack();
+    } catch (error) {
+      setError("Could not save data - please try again later!");
+      setIsLoading(false);
     }
-    navigation.goBack();
   };
+
+  const errorHandler = () => {
+    setError(null);
+  };
+
+  if (error && !isLoading) {
+    return <ErrorOverlay message={error} onConfirm={errorHandler} />;
+  }
+  if (isLoading) {
+    return <LoadingOverlay />;
+  }
 
   return (
     <View style={styles.container}>
